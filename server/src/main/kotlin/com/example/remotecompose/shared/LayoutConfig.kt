@@ -28,4 +28,8 @@ data class ElementConfig(
     val actionName: String? = null,
     val align: String? = null,
     val children: List<ElementConfig>? = null,
+    // Glass card fields
+    val alpha: Float? = null,
+    val blurRadius: Int? = null,
+    val shadowElevation: Int? = null,
 )

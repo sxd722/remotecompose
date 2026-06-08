@@ -5,10 +5,12 @@ import androidx.compose.remote.core.operations.layout.managers.BoxLayout
 import androidx.compose.remote.core.operations.layout.managers.ColumnLayout
 import androidx.compose.remote.core.operations.layout.managers.CoreText
 import androidx.compose.remote.core.operations.layout.managers.RowLayout
+import androidx.compose.remote.core.operations.layout.modifiers.GraphicsLayerModifierOperation
 import androidx.compose.remote.core.operations.layout.modifiers.ShapeType
 import androidx.compose.remote.creation.JvmRcPlatformServices
 import androidx.compose.remote.creation.RemoteComposeWriter
 import androidx.compose.remote.creation.actions.HostAction
+import androidx.compose.remote.creation.modifiers.GraphicsLayerModifier
 import androidx.compose.remote.creation.modifiers.RecordingModifier
 import androidx.compose.remote.creation.modifiers.RoundedRectShape
 import com.example.remotecompose.shared.ElementConfig
@@ -72,6 +74,8 @@ private fun renderElement(writer: RemoteComposeWriter, el: ElementConfig, inside
         "divider" -> renderDivider(writer, el)
         "card" -> renderCard(writer, el)
         "row" -> renderRow(writer, el)
+        "glassCard" -> renderGlassCard(writer, el, insideRow)
+        "glassButton" -> renderGlassButton(writer, el, insideRow)
     }
 }
 
@@ -191,4 +195,85 @@ private fun renderRow(writer: RemoteComposeWriter, el: ElementConfig) {
     writer.row(mod, RowLayout.SPACE_EVENLY, RowLayout.CENTER) {
         el.children?.forEach { child -> renderElement(writer, child, insideRow = true) }
     }
+}
+
+/**
+ * Renders a glass-style card using GraphicsLayerModifier for blur + alpha + shadow.
+ * The approach:
+ * 1. Outer box: clipped rounded rect with semi-transparent background + graphics layer (blur, alpha, shadow)
+ * 2. Tint overlay box: semi-transparent color layer for glass tinting
+ * 3. Inner content: children rendered in a column
+ */
+private fun renderGlassCard(writer: RemoteComposeWriter, el: ElementConfig, insideRow: Boolean) {
+    val alpha = el.alpha ?: 0.25f
+    val blurRadius = el.blurRadius ?: 20
+    val elevation = el.shadowElevation ?: 1
+    val radius = el.cornerRadius ?: 20
+    val padH = el.paddingH ?: 20
+    val padV = el.paddingV ?: 20
+
+    val shape = RoundedRectShape(dp(radius), dp(radius), dp(radius), dp(radius))
+    val cardBg = parseArgb(el.color ?: "#40FFFFFF") // semi-transparent white by default
+
+    // Build the graphics layer modifier
+    val graphicsLayer = GraphicsLayerModifier()
+    graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.ALPHA, alpha)
+    graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.BLUR_RADIUS_X, dp(blurRadius))
+    graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.BLUR_RADIUS_Y, dp(blurRadius))
+    graphicsLayer.setIntAttribute(GraphicsLayerModifierOperation.HAS_BLUR, 1)
+    graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.SHADOW_ELEVATION, dp(elevation))
+    graphicsLayer.setIntAttribute(GraphicsLayerModifierOperation.SHAPE, GraphicsLayerModifierOperation.SHAPE_ROUND_RECT)
+    graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.SHAPE_RADIUS, dp(radius))
+
+    // Build outer modifier
+    val mod = RecordingModifier()
+    if (!insideRow) mod.fillMaxWidth()
+    else mod.horizontalWeight(1f)
+    mod.clip(shape)
+        .background(cardBg)
+        .then(graphicsLayer)
+
+    if (padH > 0 || padV > 0) {
+        mod.padding(dp(padH), dp(padV), dp(padH), dp(padV))
+    }
+
+    // Render: outer glass box → inner column with children
+    writer.startBox(mod)
+    val innerMod = RecordingModifier().fillMaxWidth()
+    writer.column(innerMod, ColumnLayout.START, ColumnLayout.TOP) {
+        el.children?.forEach { child -> renderElement(writer, child, insideRow = false) }
+    }
+    writer.endBox()
+}
+
+/**
+ * Renders a glass-style button with translucent background.
+ */
+private fun renderGlassButton(writer: RemoteComposeWriter, el: ElementConfig, insideRow: Boolean) {
+    val radius = el.cornerRadius ?: 28
+    val bgColor = parseArgb(el.color ?: "#406200EA")
+    val textColor = parseArgb(el.textColor ?: "#FFFFFF")
+    val padH = el.paddingH ?: 24
+    val padV = el.paddingV ?: 14
+
+    val shape = RoundedRectShape(dp(radius), dp(radius), dp(radius), dp(radius))
+
+    val alpha = el.alpha ?: 0.3f
+
+    val graphicsLayer = GraphicsLayerModifier()
+    graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.ALPHA, alpha)
+
+    val mod = RecordingModifier()
+    if (!insideRow) mod.fillMaxWidth()
+    else mod.horizontalWeight(1f)
+    mod.clip(shape)
+        .background(bgColor)
+        .then(graphicsLayer)
+        .padding(dp(padH), dp(padV), dp(padH), dp(padV))
+
+    val textId = writer.addText(el.text ?: "Button")
+
+    writer.startBox(mod, BoxLayout.CENTER, BoxLayout.CENTER)
+    writer.textComponent(RecordingModifier(), textId, textColor, sp(el.fontSize ?: 16), 0, 600f, null, CoreText.TEXT_ALIGN_CENTER, 0, Int.MAX_VALUE) {}
+    writer.endBox()
 }

@@ -1,0 +1,310 @@
+{
+  "backgroundColor": "#0D1B2A",
+  "scrollable": true,
+  "padding": 16,
+  "elements": [
+    {
+      "type": "spacer",
+      "id": "spacer0",
+      "height": 8
+    },
+    {
+      "type": "glassCard",
+      "id": "title_card",
+      "alpha": 0.25,
+      "blurRadius": 20,
+      "cornerRadius": 20,
+      "shadowElevation": 1,
+      "paddingH": 20,
+      "paddingV": 20,
+      "children": [
+        {
+          "type": "text",
+          "id": "title",
+          "text": "Liquid Glass Effect",
+          "color": "#FFFFFF",
+          "fontSize": 24
+        },
+        {
+          "type": "spacer",
+          "id": "spacer1",
+          "height": 8
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "text": "Frosted glass UI rendered natively.\nSemi-transparent surfaces with blur and subtle tinting.",
+          "color": "#FFFFFFCC",
+          "fontSize": 14
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "id": "spacer2",
+      "height": 16
+    },
+    {
+      "type": "row",
+      "id": "features_row",
+      "children": [
+        {
+          "type": "glassCard",
+          "id": "feature_blur",
+          "alpha": 0.25,
+          "blurRadius": 20,
+          "cornerRadius": 20,
+          "paddingH": 16,
+          "paddingV": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "blur_title",
+              "text": "Blur",
+              "color": "#E040FB",
+              "fontSize": 16
+            },
+            {
+              "type": "spacer",
+              "id": "spacer3",
+              "height": 4
+            },
+            {
+              "type": "text",
+              "id": "blur_desc",
+              "text": "Background blur\nwith radius",
+              "color": "#FFFFFFB3",
+              "fontSize": 12
+            }
+          ]
+        },
+        {
+          "type": "glassCard",
+          "id": "feature_tint",
+          "alpha": 0.25,
+          "blurRadius": 20,
+          "cornerRadius": 20,
+          "paddingH": 16,
+          "paddingV": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "tint_title",
+              "text": "Tint",
+              "color": "#00897B",
+              "fontSize": 16
+            },
+            {
+              "type": "spacer",
+              "id": "spacer4",
+              "height": 4
+            },
+            {
+              "type": "text",
+              "id": "tint_desc",
+              "text": "Color tinting\nfor glass feel",
+              "color": "#FFFFFFB3",
+              "fontSize": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "id": "spacer5",
+      "height": 16
+    },
+    {
+      "type": "glassCard",
+      "id": "showcase_card",
+      "alpha": 0.25,
+      "blurRadius": 25,
+      "cornerRadius": 20,
+      "shadowElevation": 4,
+      "paddingH": 24,
+      "paddingV": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "showcase_title",
+          "text": "Showcase Card",
+          "color": "#FFFFFF",
+          "fontSize": 20
+        },
+        {
+          "type": "spacer",
+          "id": "spacer6",
+          "height": 12
+        },
+        {
+          "type": "text",
+          "id": "showcase_desc",
+          "text": "This card demonstrates the liquid glass effect with multiple layers:",
+          "color": "#FFFFFFD9",
+          "fontSize": 14
+        },
+        {
+          "type": "spacer",
+          "id": "spacer7",
+          "height": 12
+        },
+        {
+          "type": "text",
+          "id": "bullet1",
+          "text": "• Semi-transparent surface",
+          "color": "#E040FB",
+          "fontSize": 14
+        },
+        {
+          "type": "text",
+          "id": "bullet2",
+          "text": "• Background blur (API 31+)",
+          "color": "#E040FB",
+          "fontSize": 14
+        },
+        {
+          "type": "text",
+          "id": "bullet3",
+          "text": "• Gradient border with shine",
+          "color": "#E040FB",
+          "fontSize": 14
+        },
+        {
+          "type": "text",
+          "id": "bullet4",
+          "text": "• Subtle color tinting",
+          "color": "#E040FB",
+          "fontSize": 14
+        },
+        {
+          "type": "text",
+          "id": "bullet5",
+          "text": "• Rounded corners with elevation",
+          "color": "#E040FB",
+          "fontSize": 14
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "id": "spacer8",
+      "height": 16
+    },
+    {
+      "type": "glassCard",
+      "id": "nested_outer",
+      "alpha": 0.25,
+      "blurRadius": 20,
+      "cornerRadius": 20,
+      "paddingH": 20,
+      "paddingV": 20,
+      "children": [
+        {
+          "type": "text",
+          "id": "nested_title",
+          "text": "Nested Glass",
+          "color": "#FFFFFF",
+          "fontSize": 18
+        },
+        {
+          "type": "spacer",
+          "id": "spacer9",
+          "height": 12
+        },
+        {
+          "type": "glassCard",
+          "id": "nested_inner",
+          "alpha": 0.3,
+          "blurRadius": 15,
+          "cornerRadius": 16,
+          "shadowElevation": 2,
+          "paddingH": 16,
+          "paddingV": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "nested_inner_text",
+              "text": "Glass inside glass — layering translucent surfaces creates depth.",
+              "color": "#FFFFFFE6",
+              "fontSize": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "id": "spacer10",
+      "height": 16
+    },
+    {
+      "type": "glassCard",
+      "id": "notif_card",
+      "alpha": 0.25,
+      "blurRadius": 20,
+      "cornerRadius": 20,
+      "paddingH": 16,
+      "paddingV": 16,
+      "children": [
+        {
+          "type": "text",
+          "id": "notif_title",
+          "text": "🔔  Notification Style",
+          "color": "#FFFFFF",
+          "fontSize": 16
+        },
+        {
+          "type": "spacer",
+          "id": "spacer11",
+          "height": 4
+        },
+        {
+          "type": "text",
+          "id": "notif_desc",
+          "text": "A glass card mimicking a notification tile",
+          "color": "#FFFFFFB3",
+          "fontSize": 12
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "id": "spacer12",
+      "height": 16
+    },
+    {
+      "type": "row",
+      "id": "button_row",
+      "children": [
+        {
+          "type": "glassButton",
+          "id": "primary_btn",
+          "text": "Primary",
+          "color": "#406200EA",
+          "textColor": "#FFFFFF",
+          "cornerRadius": 28,
+          "alpha": 0.5,
+          "paddingH": 24,
+          "paddingV": 14
+        },
+        {
+          "type": "glassButton",
+          "id": "secondary_btn",
+          "text": "Secondary",
+          "color": "#4000897B",
+          "textColor": "#FFFFFF",
+          "cornerRadius": 28,
+          "alpha": 0.5,
+          "paddingH": 24,
+          "paddingV": 14
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "id": "spacer13",
+      "height": 32
+    }
+  ]
+}
