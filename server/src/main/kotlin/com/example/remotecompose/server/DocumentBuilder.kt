@@ -198,14 +198,18 @@ private fun renderRow(writer: RemoteComposeWriter, el: ElementConfig) {
 }
 
 /**
- * Renders a glass-style card using GraphicsLayerModifier for blur + alpha + shadow.
- * The approach:
- * 1. Outer box: clipped rounded rect with semi-transparent background + graphics layer (blur, alpha, shadow)
- * 2. Tint overlay box: semi-transparent color layer for glass tinting
- * 3. Inner content: children rendered in a column
+ * Renders a glass-style card.
+ *
+ * Architecture:
+ *   Outer box (clipped, rounded rect)
+ *     ├── Background: semi-transparent white (#40FFFFFF)
+ *     ├── GraphicsLayer: blur + shadow (NO alpha — alpha is baked into bg color)
+ *     └── Content column with children
+ *
+ * The alpha is baked directly into the background color (e.g. #40 = 25% opacity white)
+ * rather than using GraphicsLayerModifier.ALPHA, which would also make the children transparent.
  */
 private fun renderGlassCard(writer: RemoteComposeWriter, el: ElementConfig, insideRow: Boolean) {
-    val alpha = el.alpha ?: 0.25f
     val blurRadius = el.blurRadius ?: 20
     val elevation = el.shadowElevation ?: 1
     val radius = el.cornerRadius ?: 20
@@ -213,14 +217,14 @@ private fun renderGlassCard(writer: RemoteComposeWriter, el: ElementConfig, insi
     val padV = el.paddingV ?: 20
 
     val shape = RoundedRectShape(dp(radius), dp(radius), dp(radius), dp(radius))
-    val cardBg = parseArgb(el.color ?: "#40FFFFFF") // semi-transparent white by default
+    // Background color already has alpha baked in (e.g. #40FFFFFF = 25% white)
+    val cardBg = parseArgb(el.color ?: "#40FFFFFF")
 
-    // Build the graphics layer modifier
+    // Build the graphics layer modifier — blur + shadow only, NO alpha on content
     val graphicsLayer = GraphicsLayerModifier()
-    graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.ALPHA, alpha)
+    graphicsLayer.setIntAttribute(GraphicsLayerModifierOperation.HAS_BLUR, 1)
     graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.BLUR_RADIUS_X, dp(blurRadius))
     graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.BLUR_RADIUS_Y, dp(blurRadius))
-    graphicsLayer.setIntAttribute(GraphicsLayerModifierOperation.HAS_BLUR, 1)
     graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.SHADOW_ELEVATION, dp(elevation))
     graphicsLayer.setIntAttribute(GraphicsLayerModifierOperation.SHAPE, GraphicsLayerModifierOperation.SHAPE_ROUND_RECT)
     graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.SHAPE_RADIUS, dp(radius))
@@ -251,6 +255,7 @@ private fun renderGlassCard(writer: RemoteComposeWriter, el: ElementConfig, insi
  */
 private fun renderGlassButton(writer: RemoteComposeWriter, el: ElementConfig, insideRow: Boolean) {
     val radius = el.cornerRadius ?: 28
+    // Color already has alpha baked in (e.g. #406200EA)
     val bgColor = parseArgb(el.color ?: "#406200EA")
     val textColor = parseArgb(el.textColor ?: "#FFFFFF")
     val padH = el.paddingH ?: 24
@@ -258,17 +263,11 @@ private fun renderGlassButton(writer: RemoteComposeWriter, el: ElementConfig, in
 
     val shape = RoundedRectShape(dp(radius), dp(radius), dp(radius), dp(radius))
 
-    val alpha = el.alpha ?: 0.3f
-
-    val graphicsLayer = GraphicsLayerModifier()
-    graphicsLayer.setFloatAttribute(GraphicsLayerModifierOperation.ALPHA, alpha)
-
     val mod = RecordingModifier()
     if (!insideRow) mod.fillMaxWidth()
     else mod.horizontalWeight(1f)
     mod.clip(shape)
         .background(bgColor)
-        .then(graphicsLayer)
         .padding(dp(padH), dp(padV), dp(padH), dp(padV))
 
     val textId = writer.addText(el.text ?: "Button")
